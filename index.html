@@ -1,0 +1,266 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra Pro UI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at 20% 20%, #0f2027, #203a43, #2c5364);
+  overflow-x: hidden;
+  color: white;
+}
+
+/* BACKGROUND ANIMATION */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* NAVBAR */
+nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 50px;
+  backdrop-filter: blur(20px);
+}
+
+nav h1 {
+  font-weight: 700;
+  color: cyan;
+}
+
+nav ul {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+}
+
+nav ul li {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+nav ul li:hover {
+  color: cyan;
+}
+
+/* HERO */
+.hero {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 50px;
+}
+
+.text {
+  max-width: 500px;
+}
+
+.text h2 {
+  font-size: 3rem;
+  background: linear-gradient(90deg, cyan, violet);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.text p {
+  margin: 20px 0;
+  opacity: 0.8;
+}
+
+.btn {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(90deg, cyan, blue);
+  color: white;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px cyan;
+}
+
+/* PROFILE CIRCLE */
+.circle {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, cyan, violet);
+  padding: 5px;
+  animation: float 4s ease-in-out infinite;
+}
+
+.circle img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* CARDS */
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 50px;
+}
+
+.card {
+  width: 250px;
+  padding: 20px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.05);
+  transition: 0.4s;
+}
+
+.card:hover {
+  transform: translateY(-15px) scale(1.05);
+  box-shadow: 0 0 30px cyan;
+}
+
+/* CURSOR GLOW */
+.cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: cyan;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: transform 0.1s linear;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+<div class="cursor" id="cursor"></div>
+
+<nav>
+  <h1>ULTRA UI</h1>
+  <ul>
+    <li>Home</li>
+    <li>Projects</li>
+    <li>Contact</li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="text">
+    <h2>Next Level Interface</h2>
+    <p>This is an ultra modern futuristic UI with smooth animations and glowing effects.</p>
+    <button class="btn">Explore</button>
+  </div>
+
+  <div class="circle">
+    <img src="https://i.imgur.com/2DhmtJ4.png">
+  </div>
+</section>
+
+<section class="cards">
+  <div class="card">
+    <h3>Speed</h3>
+    <p>Lightning fast performance UI.</p>
+  </div>
+  <div class="card">
+    <h3>Design</h3>
+    <p>Futuristic and modern visuals.</p>
+  </div>
+  <div class="card">
+    <h3>Power</h3>
+    <p>Advanced animation system.</p>
+  </div>
+</section>
+
+<script>
+// CURSOR EFFECT
+const cursor = document.getElementById("cursor");
+document.addEventListener("mousemove", e => {
+  cursor.style.top = e.clientY + "px";
+  cursor.style.left = e.clientX + "px";
+});
+
+// NEURAL BACKGROUND
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for (let i = 0; i < 80; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5),
+    vy: (Math.random() - 0.5)
+  });
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = "cyan";
+    ctx.fill();
+  });
+
+  // connecting lines
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i; j < particles.length; j++) {
+      let dx = particles[i].x - particles[j].x;
+      let dy = particles[i].y - particles[j].y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 100) {
+        ctx.strokeStyle = "rgba(0,255,255,0.2)";
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
